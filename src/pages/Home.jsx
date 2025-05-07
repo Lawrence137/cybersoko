@@ -28,7 +28,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="relative bg-gray-900 text-white">
+    <div className="min-h-[100dvh] w-full bg-gray-900 text-white">
       {/* Subtle Background Particles */}
       <div className="absolute inset-0 pointer-events-none z-0">
         {[...Array(8)].map((_, i) => (
