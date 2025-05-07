@@ -26,10 +26,20 @@
   
   /* stars homepage bg effect */
 /* Reset default margins and ensure full viewport coverage */
-
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+  }
   
   /* Ensure the root element takes up the full viewport */
- 
+  #root {
+    min-height: 100vh;
+    width: 100%;
+    background-color: #111827; /* Matches bg-gray-900 */
+  }
   
   /* Existing animations */
   /* @keyframes auroraWave {
