@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Add this to your global CSS file */
+@keyframes auroraWave {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+  
+  /* Ensure this applies to elements with the animation */
+  [style*="animation: auroraWave"] {
+    background-size: 200% 100%;
+  }
