@@ -3,21 +3,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
-  // Animation variants for the menu container
+  // Animation variants for the menu container (slide in from right)
   const menuVariants = {
     hidden: {
-      x: '75%',
+      x: '75%', // Start at 75% off-screen to the right
       opacity: 0,
       transition: { duration: 0.4, ease: 'easeInOut' },
     },
     visible: {
-      x: 0,
+      x: 0, // Slide to the left (fully visible)
       opacity: 1,
       transition: { duration: 0.4, ease: 'easeInOut' },
     },
   };
 
-  // Animation variants for individual links
+  // Animation variants for individual links (staggered slide-in)
   const linkVariants = {
     hidden: { opacity: 0, x: 20 },
     visible: (i) => ({
@@ -33,17 +33,18 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
         <>
           {/* Background Blur Overlay */}
           <motion.div
-            className="fixed inset-0 z-40 bg-black/30 backdrop-blur-sm md:hidden"
+            className="fixed inset-0 z-80 bg-black/30 backdrop-blur-sm md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
             onClick={toggleMenu}
+            aria-hidden="true"
           />
 
           {/* Mobile Menu */}
           <motion.div
-            className="fixed top-0 right-0 z-50 w-3/4 h-full bg-primary/95 backdrop-blur-lg md:hidden shadow-2xl"
+            className="fixed top-0 right-0 z-90 w-3/4 h-full bg-primary/95 backdrop-blur-lg md:hidden shadow-2xl"
             initial="hidden"
             animate="visible"
             exit="hidden"
@@ -59,7 +60,7 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
             </button>
 
             {/* Navigation Links */}
-            <nav className="flex flex-col items-start justify-center h-full px-8 space-y-6">
+            <nav className="flex flex-col items-center justify-center h-full space-y-6">
               {[
                 { to: '/', label: 'Home' },
                 { to: '/products', label: 'Products' },
@@ -77,7 +78,7 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
                     onClick={toggleMenu}
                     className="flex items-center text-2xl font-medium text-white hover:text-accent hover:translate-x-2 transition-all duration-200"
                   >
-                    {item.icon && <item.icon className="w-7 h-7 mr-3" />}
+                    {item.icon && <item.icon className="w-7 h-7 mr-3 text-white" />}
                     {item.label}
                     {item.count > 0 && (
                       <span className="ml-2 bg-secondary text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
@@ -89,7 +90,7 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
               ))}
             </nav>
 
-            {/* Decorative Element */}
+            {/* Decorative Gradient */}
             <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-blue-700/40 to-transparent" />
           </motion.div>
         </>
