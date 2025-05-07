@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import Hero from '../components/common/Hero'; // Renamed to match previous context
 import ProductCard from '../components/ui/ProductCard';
+import { Link } from 'react-router-dom';
 
 // Animation variants for section titles
 const sectionTitleVariants = {
@@ -81,6 +82,15 @@ const Home = () => {
               <ProductCard product={product} />
             </motion.div>
           ))}
+        </div>
+                {/* View All Products Link */}
+        <div className="mt-8 text-center">
+          <Link
+            to="/products"
+            className="inline-block px-6 py-3 rounded-lg bg-gradient-to-r from-secondary to-green-400 text-white font-medium text-lg hover:from-green-400 hover:to-green-500 transition-all duration-300 shadow-lg"
+          >
+            View All Products
+          </Link>
         </div>
       </section>
 
