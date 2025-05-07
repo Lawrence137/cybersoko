@@ -13,53 +13,129 @@ const Header = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
-  // Animation for nav links underline effect
+  // Animation for nav links (glowing underline on hover)
   const underlineVariants = {
-    hidden: { width: '0%' },
-    visible: { width: '100%', transition: { duration: 0.3, ease: 'easeInOut' } },
+    hidden: { width: '0%', boxShadow: 'none' },
+    visible: {
+      width: '100%',
+      boxShadow: '0 0 8px rgba(0, 255, 255, 0.5)',
+      transition: { duration: 0.3, ease: 'easeInOut' },
+    },
+  };
+
+  // Animation for buttons (scale and glowing shadow on hover)
+  const buttonHoverVariants = {
+    hover: {
+      scale: 1.05,
+      boxShadow: '0 0 12px rgba(255, 255, 255, 0.3)',
+      transition: { duration: 0.3, ease: 'easeInOut' },
+    },
+  };
+
+  // Animation for nav items on mount (staggered fade-in)
+  const navItemVariants = {
+    hidden: { opacity: 0, y: -10 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: i * 0.1, duration: 0.3, ease: 'easeOut' },
+    }),
   };
 
   return (
     <>
       <header className="sticky top-0 z-50 bg-gray-900/80 backdrop-blur-md shadow-[0_0_15px_rgba(0,255,255,0.2)]">
-        <div className="container mx-auto flex justify-between items-center py-3 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto flex items-center py-3 px-4 sm:px-6 lg:px-8">
           {/* Logo */}
-          <Link
-            to="/"
-            className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-white bg-clip-text text-transparent hover:from-blue-200 hover:to-white transition-all duration-300"
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
           >
-            CyberSoko
-          </Link>
+            <Link
+              to="/"
+              className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-white bg-clip-text text-transparent hover:from-blue-200 hover:to-white transition-all duration-300"
+            >
+              CyberSoko
+            </Link>
+          </motion.div>
+
+          {/* Spacer to push nav links slightly off-center */}
+          <div className="flex-grow md:flex-grow-[2]" />
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {[
-              { to: '/', label: 'Home' },
-              { to: '/products', label: 'Products' },
-              { to: '/cart', label: 'Cart', icon: ShoppingCartIcon, count: cart.length },
-            ].map((item) => (
-              <div key={item.label} className="relative">
-                <Link
-                  to={item.to}
-                  className="flex items-center text-lg font-medium text-gray-200 hover:text-cyan-400 transition-colors duration-300"
-                >
-                  {item.icon && <item.icon className="w-5 h-5 mr-2 text-gray-200" />}
-                  {item.label}
-                  {item.count > 0 && (
-                    <span className="ml-2 bg-cyan-500 text-gray-900 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                      {item.count}
-                    </span>
-                  )}
-                </Link>
+          <div className="hidden md:flex items-center gap-12">
+            {/* Standard Nav Links (Slightly off-center to the left) */}
+            <nav className="flex items-center space-x-8">
+              {[
+                { to: '/', label: 'Home' },
+                { to: '/products', label: 'Products' },
+                { to: '/cart', label: 'Cart', icon: ShoppingCartIcon, count: cart.length },
+              ].map((item, index) => (
                 <motion.div
-                  className="absolute bottom-0 left-0 h-0.5 bg-cyan-400"
+                  key={item.label}
+                  custom={index}
+                  variants={navItemVariants}
                   initial="hidden"
-                  whileHover="visible"
-                  variants={underlineVariants}
-                />
-              </div>
-            ))}
-          </nav>
+                  animate="visible"
+                  className="relative"
+                >
+                  <Link
+                    to={item.to}
+                    className="flex items-center text-lg font-medium text-gray-200 hover:text-cyan-400 transition-colors duration-300"
+                  >
+                    {item.icon && <item.icon className="w-5 h-5 mr-2 text-gray-200" />}
+                    {item.label}
+                    {item.count > 0 && (
+                      <span className="ml-2 bg-cyan-500 text-gray-900 text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                        {item.count}
+                      </span>
+                    )}
+                  </Link>
+                  <motion.div
+                    className="absolute bottom-0 left-0 h-0.5 bg-cyan-400"
+                    initial="hidden"
+                    whileHover="visible"
+                    variants={underlineVariants}
+                  />
+                </motion.div>
+              ))}
+            </nav>
+
+            {/* Login and Sign Up Buttons (Right-aligned with extra spacing) */}
+            <div className="flex items-center gap-4">
+              <motion.div
+                variants={buttonHoverVariants}
+                whileHover="hover"
+                custom={3} // For staggered animation
+                initial="hidden"
+                animate="visible"
+                className="variants={navItemVariants}"
+              >
+                <Link
+                  to="/login"
+                  className="px-4 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 font-medium shadow-md"
+                >
+                  Log In
+                </Link>
+              </motion.div>
+              <motion.div
+                variants={buttonHoverVariants}
+                whileHover="hover"
+                custom={4} // For staggered animation
+                initial="hidden"
+                animate="visible"
+                className="variants={navItemVariants}"
+              >
+                <Link
+                  to="/signup"
+                  className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-accent to-yellow-400 text-gray-900 hover:from-yellow-400 hover:to-yellow-500 transition-all duration-300 font-medium shadow-md"
+                >
+                  Sign Up
+                </Link>
+              </motion.div>
+            </div>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -86,7 +162,7 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile Menu (Moved outside <header>) */}
+      {/* Mobile Menu */}
       <MobileMenu isOpen={isMenuOpen} toggleMenu={toggleMenu} cartCount={cart.length} />
     </>
   );
