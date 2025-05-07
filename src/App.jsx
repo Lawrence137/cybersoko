@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
+import './App.css';
 
 function App() {
   return (
