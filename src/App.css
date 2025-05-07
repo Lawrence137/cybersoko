@@ -7,7 +7,7 @@
 
 
 /* hero bg effect */
-@keyframes auroraWave {
+/* @keyframes auroraWave {
     0% {
       background-position: 0% 50%;
     }
@@ -17,15 +17,31 @@
   }
   
   /* Ensure this applies to elements with the animation */
-  [style*="animation: auroraWave"] {
+  /* [style*="animation: auroraWave"] {
     background-size: 200% 100%;
-  }
+  } */ */
 
   
 
   
   /* stars homepage bg effect */
-@keyframes twinkle {
+/* Reset default margins and ensure full viewport coverage */
+
+  
+  /* Ensure the root element takes up the full viewport */
+ 
+  
+  /* Existing animations */
+  /* @keyframes auroraWave {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+  
+  @keyframes twinkle {
     0%, 100% {
       opacity: 0.2;
       transform: scale(1);
@@ -38,4 +54,4 @@
   
   .twinkle {
     animation: twinkle 2s infinite ease-in-out;
-  }
+  } */

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import Hero from '../components/common/Hero';
+import Hero from '../components/common/Hero'; // Renamed to match previous context
 import ProductCard from '../components/ui/ProductCard';
 
 // Animation variants for section titles
@@ -29,26 +29,23 @@ const Home = () => {
 
   return (
     <div className="relative bg-gray-900 text-white">
-      {/* Starry Night Background with Animated Dots */}
+      {/* Subtle Background Particles */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className={`absolute rounded-full ${
-              i % 2 === 0 ? 'bg-white' : 'bg-cyan-400'
-            } ${i % 3 === 0 ? 'w-2 h-2' : 'w-1 h-1'} opacity-20 twinkle`}
+            className="absolute w-1 h-1 bg-cyan-400 rounded-full opacity-20"
             style={{
-              left: `${5 + (i * 73) % 100}%`, // Spread dots across the viewport
-              top: `${5 + (i * 47) % 100}%`, // Random but consistent positioning
-              animationDelay: `${i * 0.5}s`, // Stagger the twinkling
+              left: `${10 + i * 12}%`,
+              top: `${20 + i * 15}%`,
             }}
             animate={{
-              y: [0, -10, 0], // Subtle vertical movement
-              opacity: [0.2, 0.5, 0.2], // Fade in/out with Framer Motion
+              y: [0, -15, 0],
+              opacity: [0.2, 0.5, 0.2],
               transition: {
-                y: { repeat: Infinity, duration: 3 + i * 0.2, ease: 'easeInOut' },
-                opacity: { repeat: Infinity, duration: 3 + i * 0.2, ease: 'easeInOut' },
-                delay: i * 0.3,
+                y: { repeat: Infinity, duration: 4 + i * 0.3, ease: 'easeInOut' },
+                opacity: { repeat: Infinity, duration: 4 + i * 0.3, ease: 'easeInOut' },
+                delay: i * 0.2,
               },
             }}
           />

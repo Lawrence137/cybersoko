@@ -26,38 +26,7 @@ const ctaVariants = {
 
 const Hero = ({ title, subtitle, ctaText, ctaLink }) => {
   return (
-    <div className="relative bg-gradient-to-br from-primary via-blue-800 to-gray-900 text-white py-20 overflow-hidden">
-      {/* Aurora Waves Background */}
-      <div className="absolute inset-0 z-0">
-        {/* Wave Layer 1 */}
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            background: 'linear-gradient(90deg, rgba(0, 255, 255, 0.2), rgba(16, 185, 129, 0.3), rgba(0, 255, 255, 0.2))',
-            backgroundSize: '200% 100%',
-            animation: 'auroraWave 12s linear infinite',
-          }}
-        />
-        {/* Wave Layer 2 */}
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            background: 'linear-gradient(90deg, rgba(147, 51, 234, 0.2), rgba(16, 185, 129, 0.2), rgba(147, 51, 234, 0.2))',
-            backgroundSize: '200% 100%',
-            animation: 'auroraWave 15s linear infinite reverse',
-          }}
-        />
-        {/* Wave Layer 3 */}
-        <div
-          className="absolute inset-0 opacity-25"
-          style={{
-            background: 'linear-gradient(90deg, rgba(59, 130, 246, 0.2), rgba(0, 255, 255, 0.3), rgba(59, 130, 246, 0.2))',
-            backgroundSize: '200% 100%',
-            animation: 'auroraWave 18s linear infinite',
-          }}
-        />
-      </div>
-
+    <div className="relative w-full bg-gradient-to-br from-primary via-blue-700 to-gray-900 text-white py-20">
       {/* Background Element: Subtle Geometric Shape */}
       <div className="absolute inset-0 opacity-10 z-1">
         <svg
