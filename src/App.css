@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 
-/* Add this to your global CSS file */
+/* hero bg effect */
 @keyframes auroraWave {
     0% {
       background-position: 0% 50%;
@@ -19,4 +19,23 @@
   /* Ensure this applies to elements with the animation */
   [style*="animation: auroraWave"] {
     background-size: 200% 100%;
+  }
+
+  
+
+  
+  /* stars homepage bg effect */
+@keyframes twinkle {
+    0%, 100% {
+      opacity: 0.2;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.2);
+    }
+  }
+  
+  .twinkle {
+    animation: twinkle 2s infinite ease-in-out;
   }
