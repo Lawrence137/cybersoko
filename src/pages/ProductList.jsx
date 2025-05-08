@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ProductCard from '../components/ui/ProductCard';
 import { FaFilter, FaSearch } from 'react-icons/fa';
 import { Slider } from '@mui/material';
+import products from '../data/products'; // Import products from products.js
 
 // Animation variants for section titles
 const titleVariants = {
@@ -33,18 +34,10 @@ const ProductList = () => {
     condition: 'all',
     category: 'all',
     search: '',
-    priceRange: [0, 300000],
+    priceRange: [0, 200000], // Updated max to match highest price in products.js
     sort: 'default',
   });
   const [isFilterOpen, setIsFilterOpen] = useState(false); // For mobile filter toggle
-
-  const products = [
-    { id: 1, name: 'MacBook Pro', price: 200000, category: 'Laptop', condition: 'New', image: '/assets/macbook.jpg' },
-    { id: 2, name: 'USB-C Hub', price: 5000, category: 'Accessory', condition: 'New', image: '/assets/hub.jpg' },
-    { id: 3, name: 'Dell XPS 13', price: 150000, category: 'Laptop', condition: 'Used', image: '/assets/dell.jpg' },
-    { id: 4, name: 'HP Desktop', price: 80000, category: 'Desktop', condition: 'New', image: '/assets/hp.jpg' },
-    { id: 5, name: 'Gaming Mouse', price: 3000, category: 'Accessory', condition: 'Used', image: '/assets/mouse.jpg' },
-  ];
 
   const filteredProducts = products
     .filter((product) => {
@@ -65,9 +58,8 @@ const ProductList = () => {
 
   return (
     <div className="min-h-[100dvh] w-full bg-gray-900 text-white relative">
-      {/* New Background with Radial Gradient and Geometric Shapes */}
+      {/* Background with Radial Gradient and Geometric Shapes */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#1E3A8A] to-[#164E63] pointer-events-none z-0">
-        {/* Subtle Geometric Shapes */}
         <svg className="w-full h-full opacity-10" preserveAspectRatio="none">
           <defs>
             <linearGradient id="shapeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -75,20 +67,17 @@ const ProductList = () => {
               <stop offset="100%" style={{ stopColor: '#10B981', stopOpacity: 0.3 }} />
             </linearGradient>
           </defs>
-          {/* Triangle Shape */}
           <path
             d="M0,0 L100,100 L0,200 Z"
             fill="url(#shapeGradient)"
             transform="scale(2) translate(100, 50)"
           />
-          {/* Line Pattern */}
           <path
             d="M0,300 L400,0 M200,400 L600,100"
             stroke="url(#shapeGradient)"
             strokeWidth="1"
             transform="scale(1.5) translate(-50, 0)"
           />
-          {/* Circle Shape */}
           <circle
             cx="80%"
             cy="70%"
@@ -162,7 +151,7 @@ const ProductList = () => {
                   >
                     <option value="all">All Conditions</option>
                     <option value="New">New</option>
-                    <option value="Used">Used</option>
+                    <option value="Refurbished">Refurbished</option>
                   </select>
                 </div>
 
@@ -176,8 +165,9 @@ const ProductList = () => {
                   >
                     <option value="all">All Categories</option>
                     <option value="Laptop">Laptops</option>
-                    <option value="Desktop">Desktops</option>
-                    <option value="Accessory">Accessories</option>
+                    <option value="Smartphone">Smartphones</option>
+                    <option value="Headphones">Headphones</option>
+                    <option value="Tablet">Tablets</option>
                   </select>
                 </div>
 
@@ -192,7 +182,7 @@ const ProductList = () => {
                     onChange={(e, newValue) => setFilters({ ...filters, priceRange: newValue })}
                     valueLabelDisplay="auto"
                     min={0}
-                    max={300000}
+                    max={200000} // Updated to match highest price in products.js
                     step={1000}
                     sx={{
                       color: '#10B981', // Matches secondary color
