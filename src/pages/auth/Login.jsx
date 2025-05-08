@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
 // Animation variants for the form
 const formVariants = {
@@ -21,13 +22,17 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const location = useLocation(); // Get the location to check for redirect state
+  const { login } = useAuth();
+
+  // Get the intended route the user was trying to access (default to '/')
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Placeholder for authentication logic
-    console.log('Login:', { email, password });
-    // Navigate to home page after successful login
-    navigate('/');
+    // Mock authentication logic
+    login(email); // Set user state
+    navigate(from, { replace: true }); // Redirect to the intended route
   };
 
   return (

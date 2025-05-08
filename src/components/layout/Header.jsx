@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
 import MobileMenu from './MobileMenu';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
@@ -8,6 +9,7 @@ import { motion } from 'framer-motion';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart } = useCart();
+  const { user, logout } = useAuth(); // Get user and logout from AuthContext
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
@@ -70,7 +72,9 @@ const Header = () => {
               {[
                 { to: '/', label: 'Home' },
                 { to: '/products', label: 'Products' },
-                { to: '/cart', label: 'Cart', icon: ShoppingCartIcon, count: cart.length },
+                ...(user // Show cart link only if user is logged in
+                  ? [{ to: '/cart', label: 'Cart', icon: ShoppingCartIcon, count: cart.length }]
+                  : []),
               ].map((item, index) => (
                 <motion.div
                   key={item.label}
@@ -102,38 +106,58 @@ const Header = () => {
               ))}
             </nav>
 
-            {/* Login and Sign Up Buttons (Right-aligned with extra spacing) */}
+            {/* Auth Buttons (Right-aligned with extra spacing) */}
             <div className="flex items-center gap-4">
-              <motion.div
-                variants={buttonHoverVariants}
-                whileHover="hover"
-                custom={3} // For staggered animation
-                initial="hidden"
-                animate="visible"
-                className="variants={navItemVariants}"
-              >
-                <Link
-                  to="/login"
-                  className="px-4 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 font-medium shadow-md"
+              {user ? (
+                <motion.div
+                  variants={buttonHoverVariants}
+                  whileHover="hover"
+                  custom={3}
+                  initial="hidden"
+                  animate="visible"
+                  className="variants={navItemVariants}"
                 >
-                  Log In
-                </Link>
-              </motion.div>
-              <motion.div
-                variants={buttonHoverVariants}
-                whileHover="hover"
-                custom={4} // For staggered animation
-                initial="hidden"
-                animate="visible"
-                className="variants={navItemVariants}"
-              >
-                <Link
-                  to="/signup"
-                  className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-accent to-yellow-400 text-gray-900 hover:from-yellow-400 hover:to-yellow-500 transition-all duration-300 font-medium shadow-md"
-                >
-                  Sign Up
-                </Link>
-              </motion.div>
+                  <button
+                    onClick={logout}
+                    className="px-4 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 font-medium shadow-md"
+                  >
+                    Log Out
+                  </button>
+                </motion.div>
+              ) : (
+                <>
+                  <motion.div
+                    variants={buttonHoverVariants}
+                    whileHover="hover"
+                    custom={3}
+                    initial="hidden"
+                    animate="visible"
+                    className="variants={navItemVariants}"
+                  >
+                    <Link
+                      to="/login"
+                      className="px-4 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 font-medium shadow-md"
+                    >
+                      Log In
+                    </Link>
+                  </motion.div>
+                  <motion.div
+                    variants={buttonHoverVariants}
+                    whileHover="hover"
+                    custom={4}
+                    initial="hidden"
+                    animate="visible"
+                    className="variants={navItemVariants}"
+                  >
+                    <Link
+                      to="/signup"
+                      className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-accent to-yellow-400 text-gray-900 hover:from-yellow-400 hover:to-yellow-500 transition-all duration-300 font-medium shadow-md"
+                    >
+                      Sign Up
+                    </Link>
+                  </motion.div>
+                </>
+              )}
             </div>
           </div>
 
@@ -163,7 +187,7 @@ const Header = () => {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenu isOpen={isMenuOpen} toggleMenu={toggleMenu} cartCount={cart.length} />
+      <MobileMenu isOpen={isMenuOpen} toggleMenu={toggleMenu} cartCount={cart.length} user={user} logout={logout} />
     </>
   );
 };

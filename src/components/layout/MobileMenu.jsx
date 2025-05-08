@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
-const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
+const MobileMenu = ({ isOpen, toggleMenu, cartCount, user, logout }) => {
   // Animation variants for the menu container (slide in from right)
   const menuVariants = {
     hidden: {
@@ -36,6 +36,23 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
       transition: { delay: i * 0.1 + 0.3, duration: 0.3, ease: 'easeOut' },
     }),
   };
+
+  // Define navigation links, conditionally including Cart if user is logged in
+  const navItems = [
+    { to: '/', label: 'Home' },
+    { to: '/products', label: 'Products' },
+    ...(user // Show Cart link only if user is logged in
+      ? [{ to: '/cart', label: 'Cart', icon: ShoppingCartIcon, count: cartCount }]
+      : []),
+  ];
+
+  // Define auth buttons, showing Log Out if logged in, otherwise Log In and Sign Up
+  const authItems = user
+    ? [{ to: '#', label: 'Log Out', onClick: logout }]
+    : [
+        { to: '/login', label: 'Log In' },
+        { to: '/signup', label: 'Sign Up' },
+      ];
 
   return (
     <AnimatePresence>
@@ -83,11 +100,7 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
 
               {/* Navigation Links */}
               <nav className="flex flex-col space-y-4">
-                {[
-                  { to: '/', label: 'Home' },
-                  { to: '/products', label: 'Products' },
-                  { to: '/cart', label: 'Cart', icon: ShoppingCartIcon, count: cartCount },
-                ].map((item, index) => (
+                {navItems.map((item, index) => (
                   <motion.div
                     key={item.label}
                     custom={index}
@@ -120,12 +133,9 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
                 transition={{ duration: 0.5, delay: 0.3 }}
               />
 
-              {/* Login and Sign Up Buttons */}
+              {/* Auth Buttons */}
               <div className="flex flex-col space-y-3">
-                {[
-                  { to: '/login', label: 'Log In' },
-                  { to: '/signup', label: 'Sign Up' },
-                ].map((item, index) => (
+                {authItems.map((item, index) => (
                   <motion.div
                     key={item.label}
                     custom={index}
@@ -135,11 +145,11 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount }) => {
                   >
                     <Link
                       to={item.to}
-                      onClick={toggleMenu}
+                      onClick={item.onClick ? () => { item.onClick(); toggleMenu(); } : toggleMenu}
                       className={`block w-full text-center py-2 rounded-lg font-medium text-lg transition-all duration-300 ${
-                        item.label === 'Log In'
-                          ? 'bg-white/10 text-white hover:bg-white/20'
-                          : 'bg-gradient-to-r from-accent to-yellow-400 text-gray-900 hover:from-yellow-400 hover:to-yellow-500'
+                        item.label === 'Sign Up'
+                          ? 'bg-gradient-to-r from-accent to-yellow-400 text-gray-900 hover:from-yellow-400 hover:to-yellow-500'
+                          : 'bg-white/10 text-white hover:bg-white/20' // Applies to both Log In and Log Out
                       }`}
                     >
                       {item.label}
