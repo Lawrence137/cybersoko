@@ -1,4 +1,6 @@
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext'; // Add useAuth to check user
+import { useNavigate } from 'react-router-dom'; // Add useNavigate for redirection
 import { motion, AnimatePresence } from 'framer-motion';
 
 // Animation variants for the page title
@@ -35,15 +37,27 @@ const buttonVariants = {
 
 const Cart = () => {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { user } = useAuth(); // Check if user is logged in
+  const navigate = useNavigate(); // For redirection
+
+  // Redirect to login if user is not logged in
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { state: { from: { pathname: '/cart' } } });
+    }
+  }, [user, navigate]);
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    // Mock checkout logic
     console.log('Proceeding to checkout with cart:', cart);
     alert('Checkout successful! (Mock)');
     clearCart(); // Clear cart after checkout
   };
+
+  if (!user) {
+    return null; // Render nothing while redirecting
+  }
 
   return (
     <div className="min-h-[100dvh] w-full bg-gray-900 text-white relative">

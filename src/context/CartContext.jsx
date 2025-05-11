@@ -1,37 +1,89 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
+import { db } from '../firebase';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const { user } = useAuth();
+
+  // Load cart from Firestore when user logs in or page refreshes
+  useEffect(() => {
+    const loadCart = async () => {
+      if (user) {
+        try {
+          const cartRef = doc(db, 'carts', user.uid);
+          const cartSnap = await getDoc(cartRef);
+          if (cartSnap.exists()) {
+            setCart(cartSnap.data().items || []);
+          } else {
+            setCart([]); // If no cart exists, start with an empty cart
+          }
+        } catch (err) {
+          console.error('Failed to load cart:', err);
+          setCart([]); // Fallback to empty cart on error
+        }
+      } else {
+        setCart([]); // Clear cart if user logs out
+      }
+    };
+
+    loadCart();
+  }, [user]); // Re-run when user changes (login/logout)
+
+  // Save cart to Firestore whenever it changes
+  const saveCartToFirestore = async (updatedCart) => {
+    if (user) {
+      try {
+        const cartRef = doc(db, 'carts', user.uid);
+        await setDoc(cartRef, { items: updatedCart }, { merge: true });
+      } catch (err) {
+        console.error('Failed to save cart:', err);
+      }
+    }
+  };
 
   const addToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
+      let updatedCart;
       if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        updatedCart = prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
+      } else {
+        updatedCart = [...prevCart, { ...product, quantity: 1 }];
       }
-      return [...prevCart, { ...product, quantity: 1 }];
+      saveCartToFirestore(updatedCart); // Save to Firestore
+      return updatedCart;
     });
   };
 
-  const removeFromCart = (id) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  const removeFromCart = (productId) => {
+    setCart((prevCart) => {
+      const updatedCart = prevCart.filter((item) => item.id !== productId);
+      saveCartToFirestore(updatedCart); // Save to Firestore
+      return updatedCart;
+    });
   };
 
-  const updateQuantity = (id, quantity) => {
-    if (quantity < 1) return; // Prevent quantity from going below 1
-    setCart((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+  const updateQuantity = (productId, quantity) => {
+    setCart((prevCart) => {
+      const updatedCart = prevCart.map((item) =>
+        item.id === productId ? { ...item, quantity } : item
+      );
+      saveCartToFirestore(updatedCart); // Save to Firestore
+      return updatedCart;
+    });
   };
 
   const clearCart = () => {
-    setCart([]); // Clear all items from the cart
+    setCart([]);
+    saveCartToFirestore([]); // Clear in Firestore
   };
 
   return (
@@ -41,4 +93,8 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => useContext(CartContext);
+export const useCart = () => {
+  return useContext(CartContext);
+};
+
+export default CartContext;
