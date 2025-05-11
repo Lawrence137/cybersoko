@@ -1,9 +1,12 @@
+import { useState, useEffect } from 'react'; // Add useState, useEffect
 import { motion } from 'framer-motion';
 import Hero from '../components/common/Hero';
 import FeaturedProducts from '../components/common/FeaturedProducts';
 import products from '../data/products';
 import { Link } from 'react-router-dom';
+import Slider from 'react-slick'; // Import react-slick
 import { FaLaptop, FaMobileAlt, FaHeadphones, FaStar, FaShieldAlt, FaTruck, FaDollarSign } from 'react-icons/fa';
+import ProductCard from '../components/ui/ProductCard';
 
 // Animation variants for the promotional banner
 const bannerVariants = {
@@ -22,7 +25,7 @@ const sectionTitleVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
-// Animation for cards (categories, testimonials, why choose us)
+// Animation for cards (categories, why choose us, recently viewed)
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i) => ({
@@ -50,6 +53,15 @@ const Home = () => {
   // Select the first 3 products as featured
   const featuredProducts = products.slice(0, 3);
 
+  // State for recently viewed products
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
+
+  // Load recently viewed products from localStorage on mount
+  useEffect(() => {
+    const storedRecentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+    setRecentlyViewed(storedRecentlyViewed);
+  }, []);
+
   // Mock categories data
   const categories = [
     { name: 'Laptops', icon: FaLaptop, link: '/products?category=Laptop' },
@@ -60,17 +72,17 @@ const Home = () => {
   // Mock testimonials data
   const testimonials = [
     {
-      name: 'Kimani J.',
+      name: 'Jane K.',
       text: 'I found a great deal on a MacBook Pro! The process was seamless, and delivery was fast.',
       rating: 5,
     },
     {
-      name: 'Otieno A.',
+      name: 'Michael O.',
       text: 'Amazing selection of smartphones. My iPhone 14 Pro arrived in perfect condition.',
       rating: 4,
     },
     {
-      name: 'Cherop M.',
+      name: 'Sarah M.',
       text: 'The headphones I bought are fantastic. Great quality and excellent customer service!',
       rating: 5,
     },
@@ -82,6 +94,33 @@ const Home = () => {
     { icon: FaShieldAlt, title: 'Quality Assurance', description: 'All products are thoroughly tested for performance.' },
     { icon: FaTruck, title: 'Fast Delivery', description: 'Swift and reliable delivery across Kenya.' },
   ];
+
+  // Settings for the testimonials carousel
+  const carouselSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    arrows: false,
+    appendDots: (dots) => (
+      <div style={{ padding: '10px' }}>
+        <ul style={{ margin: '0px' }} className="flex justify-center space-x-2">
+          {dots.map((item, index) => (
+            <li key={index} className={item.props.className}>
+              <button
+                className={`w-3 h-3 rounded-full ${
+                  item.props.className.includes('slick-active') ? 'bg-secondary' : 'bg-gray-500'
+                }`}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    ),
+  };
 
   return (
     <div className="min-h-[100dvh] w-full bg-gray-900 text-white">
@@ -153,7 +192,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
+      {/* Testimonials Section with Carousel */}
       <section className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 relative z-10 bg-gradient-to-b from-gray-900 to-gray-800">
         <motion.h2
           className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent mb-8 text-center"
@@ -163,28 +202,52 @@ const Home = () => {
         >
           What Our Customers Say
         </motion.h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-cyan-400/20"
-              variants={cardVariants}
-              custom={index}
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-            >
-              <div className="flex items-center mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <FaStar key={i} className="w-5 h-5 text-yellow-400" />
-                ))}
+        <div className="max-w-2xl mx-auto">
+          <Slider {...carouselSettings}>
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="px-4">
+                <div className="bg-gray-800/50 backdrop-blur-sm p-6 rounded-lg border border-cyan-400/20">
+                  <div className="flex items-center mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <FaStar key={i} className="w-5 h-5 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-300 italic">"{testimonial.text}"</p>
+                  <p className="mt-4 text-white font-semibold">{testimonial.name}</p>
+                </div>
               </div>
-              <p className="text-gray-300 italic">"{testimonial.text}"</p>
-              <p className="mt-4 text-white font-semibold">{testimonial.name}</p>
-            </motion.div>
-          ))}
+            ))}
+          </Slider>
         </div>
       </section>
+
+      {/* Recently Viewed Section */}
+      {recentlyViewed.length > 0 && (
+        <section className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.h2
+            className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent mb-8 text-center"
+            variants={sectionTitleVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            Recently Viewed
+          </motion.h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {recentlyViewed.map((product, index) => (
+              <motion.div
+                key={product.id}
+                variants={cardVariants}
+                custom={index}
+                initial="hidden"
+                animate="visible"
+                whileHover="hover"
+              >
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Why Choose Us Section */}
       <section className="container mx-auto py-12 px-4 sm:px-6 lg:px-8 relative z-10">

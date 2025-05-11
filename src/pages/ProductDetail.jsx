@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Add useEffect
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { useAuth } from '../context/AuthContext'; // Import useAuth
+import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import products from '../data/products';
 
@@ -35,13 +35,33 @@ const buttonVariants = {
 const ProductDetail = () => {
   const { id } = useParams();
   const { addToCart } = useCart();
-  const { user } = useAuth(); // Get user from AuthContext
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location for redirect
+  const location = useLocation();
   const [showAddedMessage, setShowAddedMessage] = useState(false);
 
   // Find the product by ID
   const product = products.find((p) => p.id === id);
+
+  // Track recently viewed products in localStorage
+  useEffect(() => {
+    if (product) {
+      // Get existing recently viewed products from localStorage
+      const recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+      
+      // Remove the current product if it already exists to avoid duplicates
+      const updatedRecentlyViewed = recentlyViewed.filter((item) => item.id !== product.id);
+      
+      // Add the current product to the beginning of the array
+      updatedRecentlyViewed.unshift(product);
+      
+      // Limit to the last 4 viewed products
+      const limitedRecentlyViewed = updatedRecentlyViewed.slice(0, 4);
+      
+      // Save back to localStorage
+      localStorage.setItem('recentlyViewed', JSON.stringify(limitedRecentlyViewed));
+    }
+  }, [product]);
 
   // Handle case where product is not found
   if (!product) {
@@ -54,15 +74,13 @@ const ProductDetail = () => {
 
   const handleAddToCart = () => {
     if (!user) {
-      // Redirect to login if user is not authenticated
       navigate('/login', { state: { from: location } });
     } else {
-      // Add to cart if user is authenticated
       addToCart(product);
       setShowAddedMessage(true);
       setTimeout(() => {
         setShowAddedMessage(false);
-      }, 2000); // Hide message after 2 seconds
+      }, 2000);
     }
   };
 

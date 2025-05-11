@@ -11,6 +11,8 @@ import Cart from './pages/Cart';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import './App.css'
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 // Component to conditionally render Header and Footer
 const Layout = ({ children }) => {
