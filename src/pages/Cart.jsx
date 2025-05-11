@@ -2,6 +2,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext'; // Add useAuth to check user
 import { useNavigate } from 'react-router-dom'; // Add useNavigate for redirection
 import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect } from 'react';
 
 // Animation variants for the page title
 const titleVariants = {
