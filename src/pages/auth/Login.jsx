@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/AuthContext'; // Note: Path adjusted to match your structure
 
 // Animation variants for the form
 const formVariants = {
@@ -21,18 +21,25 @@ const buttonVariants = {
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); // Add state for error messages
   const navigate = useNavigate();
-  const location = useLocation(); // Get the location to check for redirect state
-  const { login } = useAuth();
+  const location = useLocation();
+  const { signin } = useAuth(); // Use signin from the updated AuthContext
 
   // Get the intended route the user was trying to access (default to '/')
   const from = location.state?.from?.pathname || '/';
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock authentication logic
-    login(email); // Set user state
-    navigate(from, { replace: true }); // Redirect to the intended route
+    setError(''); // Clear previous errors
+    try {
+      // Attempt to sign in with Firebase Authentication
+      await signin(email, password);
+      navigate(from, { replace: true }); // Redirect to the intended route
+    } catch (err) {
+      // Handle Firebase authentication errors
+      setError(err.message || 'Failed to log in. Please check your email and password.');
+    }
   };
 
   return (
@@ -79,6 +86,17 @@ const Login = () => {
         <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent mb-6 text-center">
           Login to CyberSoko
         </h2>
+        {/* Display error message if authentication fails */}
+        {error && (
+          <motion.p
+            className="text-red-400 mb-4 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {error}
+          </motion.p>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-300 mb-2" htmlFor="email">

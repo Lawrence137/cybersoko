@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth
 
 // Animation variants for the form
 const formVariants = {
@@ -21,14 +22,22 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(''); // Add state for error messages
   const navigate = useNavigate();
+  const { signup } = useAuth(); // Access signup from AuthContext
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Placeholder for signup logic
-    console.log('Signup:', { name, email, password });
-    // Navigate to login page after successful signup
-    navigate('/login');
+    setError(''); // Clear previous errors
+    try {
+      // Sign up with Firebase Authentication (email and password only)
+      await signup(email, password);
+      // Navigate to products page after successful signup
+      navigate('/products');
+    } catch (err) {
+      // Handle Firebase authentication errors
+      setError(err.message || 'Failed to sign up. Please try again.');
+    }
   };
 
   return (
@@ -75,6 +84,17 @@ const Signup = () => {
         <h2 className="text-3xl font-bold bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent mb-6 text-center">
           Create your CyberSoko Account
         </h2>
+        {/* Display error message if signup fails */}
+        {error && (
+          <motion.p
+            className="text-red-400 mb-4 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {error}
+          </motion.p>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-300 mb-2" htmlFor="name">

@@ -48,7 +48,7 @@ const MobileMenu = ({ isOpen, toggleMenu, cartCount, user, logout }) => {
 
   // Define auth buttons, showing Log Out if logged in, otherwise Log In and Sign Up
   const authItems = user
-    ? [{ to: '#', label: 'Log Out', onClick: logout }]
+    ? [{ to: '#', label: 'Log Out', onClick: logout }] // Use the passed logout (handleLogout)
     : [
         { to: '/login', label: 'Log In' },
         { to: '/signup', label: 'Sign Up' },

@@ -1,25 +1,49 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../firebase';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
+// Create the Auth Context
 const AuthContext = createContext();
 
+// Auth Provider Component
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // null when logged out, { email } when logged in
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email) => {
-    // Mock login: Set user data
-    setUser({ email });
+  // Monitor authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  // Sign Up function
+  const signup = (email, password) => {
+    return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  const logout = () => {
-    // Mock logout: Clear user data
-    setUser(null);
+  // Sign In function
+  const signin = (email, password) => {
+    return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  // Sign Out function
+  const signout = () => {
+    return signOut(auth);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{ user, loading, signup, signin, signout }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// Custom hook to use Auth Context
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+export default AuthContext;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Add useNavigate for redirect
 import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext'; // Import useAuth
+import { useAuth } from '../../context/AuthContext';
 import MobileMenu from './MobileMenu';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 import { motion } from 'framer-motion';
@@ -9,10 +9,23 @@ import { motion } from 'framer-motion';
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { cart } = useCart();
-  const { user, logout } = useAuth(); // Get user and logout from AuthContext
+  const { user, signout } = useAuth(); // Change logout to signout to match AuthContext
+  const navigate = useNavigate(); // Add useNavigate for redirect after logout
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
+  };
+
+  // Handle logout with error handling
+  const handleLogout = async () => {
+    try {
+      await signout(); // Call Firebase signout
+      console.log('User logged out successfully');
+      navigate('/'); // Redirect to homepage
+    } catch (err) {
+      console.error('Logout failed:', err.message || err);
+      alert('Failed to log out. Please try again.'); // Optional: Notify user of failure
+    }
   };
 
   // Animation for nav links (glowing underline on hover)
@@ -118,7 +131,7 @@ const Header = () => {
                   className="variants={navItemVariants}"
                 >
                   <button
-                    onClick={logout}
+                    onClick={handleLogout} // Use the new handleLogout function
                     className="px-4 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-all duration-300 font-medium shadow-md"
                   >
                     Log Out
@@ -187,7 +200,7 @@ const Header = () => {
       </header>
 
       {/* Mobile Menu */}
-      <MobileMenu isOpen={isMenuOpen} toggleMenu={toggleMenu} cartCount={cart.length} user={user} logout={logout} />
+      <MobileMenu isOpen={isMenuOpen} toggleMenu={toggleMenu} cartCount={cart.length} user={user} logout={handleLogout} /> {/* Update logout to handleLogout */}
     </>
   );
 };
