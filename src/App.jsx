@@ -1,3 +1,6 @@
+import './App.css'
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -10,9 +13,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
-import './App.css'
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import AdminLayout from './components/admin/AdminLayout';
 
 // Component to conditionally render Header and Footer
 const Layout = ({ children }) => {
@@ -49,6 +50,9 @@ function App() {
                 />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/admin" element={<AdminLayout />}>
+                 
+                </Route>
               </Routes>
             </Layout>
           </div>
