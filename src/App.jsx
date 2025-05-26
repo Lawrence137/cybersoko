@@ -14,6 +14,7 @@ import Cart from './pages/Cart';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import AdminLayout from './components/admin/AdminLayout';
+import ProductManagement from './pages/admin/ProductManagement';
 
 // Component to conditionally render Header and Footer
 const Layout = ({ children }) => {
@@ -51,7 +52,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/admin" element={<AdminLayout />}>
-                 
+                  <Route path="products" element={<ProductManagement />} />
                 </Route>
               </Routes>
             </Layout>
